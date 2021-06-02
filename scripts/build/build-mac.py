@@ -755,11 +755,13 @@ def change_rpaths():
             if install_path.startswith('\t/opt/local/libexec/qt5/'):
                 old_install_path = install_path.partition('(')[0]
                 new_install_path = install_path.partition('/opt/local/libexec/qt5/lib/')[2].partition('(')[0]
-                must_run('install_name_tool -change {}  @executable_path/../../../../../../Frameworks/{} {}'.format(old_install_path, new_install_path, qwebengineprocess))
+                must_run('install_name_tool -change {}  @rpath/{} {}'.format(old_install_path, new_install_path, qwebengineprocess))
 
-        old_rpath = '@executable_path/../Frameworks'
-        relative_frameworks_dir = '@executable_path/../../../../../../Frameworks'
-        must_run('install_name_tool -rpath {} {} {}' .format(old_rpath, relative_frameworks_dir, qwebengineprocess))
+        # old_rpath = '@executable_path/../Frameworks'
+        # relative_frameworks_dir = '@executable_path/../../../../../../Frameworks'
+        # must_run('install_name_tool -rpath {} {} {}' .format(old_rpath, relative_frameworks_dir, qwebengineprocess))
+        relative_frameworks_dir = ' @loader_path/../../../../../../../'
+        must_run('install_name_tool  -add_rpath {} {}' .format(relative_frameworks_dir, qwebengineprocess))
 
     modify_webengine_rpath()
 
